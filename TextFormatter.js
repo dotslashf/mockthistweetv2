@@ -1,13 +1,6 @@
-let emoji1 = 'please💩';
-let emoji2 = 'please🚀';
-let emoji3 = 'please🐈';
-
-const inputText =
-  "Lorem @ipsum #dolor sit amet, consectetur adipiscing elit???'. Phasellus eu porta nisi. Ut sed nunc in turpis porttitor";
-
-class textFormatter {
-  constructor(text) {
-    this.text = this._removeBadChars(text);
+class TextFormatter {
+  constructor(inputText) {
+    this.text = this._removeBadChars(inputText);
   }
 
   _removeBadChars(text) {
@@ -49,12 +42,4 @@ class textFormatter {
   }
 }
 
-const textF = new textFormatter(inputText);
-const ce1 = emoji1.slice(-2);
-const ce2 = emoji2.slice(-2);
-const ce3 = emoji3.slice(-2);
-console.log(
-  `${textF.mockText()}\n${textF.mickTixt()}\n${textF.transformoji(
-    ce1
-  )}\n${textF.transformoji(ce2)}\n${textF.transformoji(ce3)}`
-);
+module.exports = TextFormatter;
