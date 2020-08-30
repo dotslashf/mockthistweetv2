@@ -1,0 +1,15 @@
+{
+  "name": "autohook-mockthistweet",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "fadhlu <fadhlurahman.i@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jimp": "^0.16.1",
+    "twitter-autohook": "^1.7.2"
+  },
+  "scripts": {
+    "start": "nodejs app.js ",
+    "dev": "nodemon app.js "
+  }
+}
