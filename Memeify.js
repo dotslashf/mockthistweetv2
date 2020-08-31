@@ -1,16 +1,24 @@
 const Jimp = require('jimp');
 
+const sleep = ms => {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+};
+
 class Memeify {
-  generateMeme(type, imageCaption) {
+  async generateMeme(type, imageCaption) {
     const image =
-      type == 'spongebob' ? 'img/mock_spongebob.png' : 'img/mock_khaleesi.png';
+      type == 'spongebob'
+        ? './img/mock_spongebob.png'
+        : './img/mock_khaleesi.png';
     const outputImage =
       type == 'spongebob'
-        ? 'img/mock_spongebob_generated.png'
-        : 'img/mock_khaleesi_generated.png';
-    Jimp.read(image)
-      .then(image => {
-        Jimp.loadFont('font/impact.fnt').then(font => {
+        ? './img/mock_spongebob_generated.png'
+        : './img/mock_khaleesi_generated.png';
+    await Jimp.read(image)
+      .then(async image => {
+        await Jimp.loadFont('font/impact.fnt').then(font => {
           let textHeight = Jimp.measureTextHeight(
             font,
             imageCaption,
@@ -29,11 +37,14 @@ class Memeify {
             image.bitmap.height
           );
           image.write(outputImage);
+          console.log('Meme generated');
         });
       })
       .catch(err => {
         console.log(err);
       });
+    await sleep(1500);
+    return outputImage;
   }
 }
 

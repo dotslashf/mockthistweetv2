@@ -10,7 +10,7 @@
     "twitter-autohook": "^1.7.2"
   },
   "scripts": {
-    "start": "nodejs app.js ",
+    "start": "node app.js ",
     "dev": "nodemon app.js "
   }
 }

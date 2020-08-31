@@ -1,10 +1,9 @@
 const { Autohook } = require('twitter-autohook');
+const { replyWithMock } = require('./Mockit');
 require('dotenv/config');
 
 (async start => {
   try {
-    const webhookURL = `https://${process.env.PROJECT_DOMAIN}.glitch.me/webhook`;
-
     const webhook = new Autohook({
       consumer_key: process.env.CONSUMER_KEY,
       consumer_secret: process.env.CONSUMER_SECRET,
@@ -17,18 +16,10 @@ require('dotenv/config');
 
     // @ts-ignore
     webhook.on('event', async event => {
-      if (event.tweet_create_events) {
-        let mention = event.tweet_create_events.shift();
-        const texts = mention.text.split(' ');
-        console.log(texts);
-        if (texts.includes('please')) {
-          console.log('i shall mock this');
-        }
-      }
+      await replyWithMock(event);
     });
 
     await webhook.removeWebhooks();
-
     await webhook.start();
 
     await webhook.subscribe({

@@ -1,6 +1,12 @@
 class TextFormatter {
   constructor(inputText) {
-    this.text = this._removeBadChars(inputText);
+    this.text = this._removeUrl(inputText);
+    this.text = this.text = this._removeBadChars(this.text);
+  }
+
+  _removeUrl(text) {
+    const regex = /(?:https?):\/\/[\n\S]+/g;
+    return text.replace(regex, '');
   }
 
   _removeBadChars(text) {

@@ -1,14 +1,33 @@
 const Memeify = require('./Memeify');
 const TextFormatter = require('./TextFormatter');
+const fs = require('fs');
+const { updateTweetWithMock } = require('./twitterClient');
 
 const textFormatter = new TextFormatter(
-  'hello from mockthistweetv2 built using js, i hope this is works on both image hello from mockthistweetv2 built using js, i hope this is works on both image hello from mockthistweetv2 built using js, i hope this is works on both image'
+  'maen ke rumah gebetan, pas mau pulang sengaja ninggalin barang biar ada alasan maen ke rumahnya lagi'
 );
 
 const mockText = textFormatter.mockText();
-const mickTixt = textFormatter.mickTixt();
 
 const memeGenerator = new Memeify();
 
-memeGenerator.generateMeme('khaleesi', mickTixt);
-memeGenerator.generateMeme('spongebob', mockText);
+const sleep = ms => {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+};
+
+(async () => {
+  const imgPath = await memeGenerator.generateMeme('khaleesi', mockText);
+  await sleep(1500);
+  updateTweetWithMock('1299324070647873536', mockText, imgPath);
+})();
+
+// memeGenerator.generateMeme('spongebob', mockText);
+
+// const imgPath = fs.readFileSync('./img/mock_spongebob_generated.png');
+// updateTweetWithMock(
+//   '1299524304086818816',
+//   'mockthistweetv2',
+//   './img/mock_spongebob_generated.png'
+// );
