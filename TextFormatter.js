@@ -1,12 +1,27 @@
 class TextFormatter {
   constructor(inputText) {
     this.text = this._removeUrl(inputText);
-    this.text = this.text = this._removeBadChars(this.text);
+    this.text = this._removeScreenNameandHashtag(this.text);
+    this.text = this._removeBadChars(this.text);
   }
 
   _removeUrl(text) {
     const regex = /(?:https?):\/\/[\n\S]+/g;
     return text.replace(regex, '');
+  }
+
+  _removeScreenNameandHashtag(text) {
+    let texts = text.split(' ');
+    let regex = /[@#]/g;
+    return texts
+      .map(text => {
+        if (text.match(regex)) {
+          return;
+        } else {
+          return text;
+        }
+      })
+      .join(' ');
   }
 
   _removeBadChars(text) {
