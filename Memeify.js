@@ -33,7 +33,7 @@ class Memeify {
               text: imageCaption,
               alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
             },
-            image.bitmap.width - 20,
+            image.bitmap.width,
             image.bitmap.height
           );
           image.write(outputImage);

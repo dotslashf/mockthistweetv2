@@ -1,8 +1,41 @@
 const config = require('./configuration');
 const Memeify = require('./Memeify');
 const TextFormatter = require('./TextFormatter');
-const { getTargetTweet, updateTweetWithMock } = require('./twitterClient');
+const {
+  getTargetTweet,
+  updateTweetWithMock,
+  updateTweet,
+} = require('./twitterClient');
 const memeGenerator = new Memeify();
+
+async function generateMock(type, mention) {
+  let targetTweetId = mention.in_reply_to_status_id_str;
+  const targetTweet = await getTargetTweet(targetTweetId);
+
+  const textFormatter = new TextFormatter(targetTweet);
+  let imagePath = null;
+  let mockTextResult = null;
+
+  if (type == 'spongebob') {
+    mockTextResult = textFormatter.mockText();
+    imagePath = await memeGenerator.generateMeme(type, mockTextResult);
+  } else if (type == 'khaleesi') {
+    mockTextResult = textFormatter.mickTixt();
+    imagePath = await memeGenerator.generateMeme(type, mockTextResult);
+  }
+
+  updateTweetWithMock(mention.id_str, mockTextResult, imagePath);
+}
+
+async function generateMockEmoji(mention, emoji) {
+  let targetTweetId = mention.in_reply_to_status_id_str;
+  const targetTweet = await getTargetTweet(targetTweetId);
+
+  const textFormatter = new TextFormatter(targetTweet);
+  const textTransformoji = textFormatter.transformoji(emoji);
+
+  updateTweet(mention.id_str, textTransformoji);
+}
 
 async function replyWithMock(event) {
   if (!event.tweet_create_events) {
@@ -20,23 +53,24 @@ async function replyWithMock(event) {
     return;
   }
 
-  if (texts.includes('please')) {
-    let targetUser = mention.in_reply_to_user_id_str;
-    targetUser = Number(targetUser);
+  let targetUser = mention.in_reply_to_user_id_str;
+  targetUser = Number(targetUser);
 
-    if (config.exclusive_ids.includes(targetUser)) {
-      return;
-    } else {
-      let targetTweetId = mention.in_reply_to_status_id_str;
-      const targetTweet = await getTargetTweet(targetTweetId);
-
-      const textFormatter = new TextFormatter(targetTweet);
-      const mockText = textFormatter.mockText();
-
-      const imagePath = await memeGenerator.generateMeme('spongebob', mockText);
-
-      updateTweetWithMock(mention.id_str, mockText, imagePath);
-    }
+  if (config.exclusiveIds.includes(targetUser)) {
+    console.log('Cant mock exclusive ids');
+    return;
+  } else {
+    texts.map(text => {
+      if (text.match(/\bplease/g)) {
+        if (text.length > 6) {
+          generateMockEmoji(mention, text.substr(-2));
+        } else {
+          generateMock('spongebob', mention);
+        }
+      } else if (text.match(/\bpliis/g)) {
+        generateMock('khaleesi', mention);
+      }
+    });
   }
 }
 

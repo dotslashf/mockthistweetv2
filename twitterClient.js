@@ -54,4 +54,22 @@ const updateTweetWithMock = async (replyTargetId, text, img) => {
   );
 };
 
-module.exports = { getTargetTweet, updateTweetWithMock };
+const updateTweet = async (replyTargetId, text) => {
+  return twitterClient.post(
+    'statuses/update',
+    {
+      status: text,
+      in_reply_to_status_id: replyTargetId,
+      auto_populate_reply_metadata: true,
+    },
+    (err, res) => {
+      if (err) {
+        console.log('Error update tweet: ', err);
+      } else {
+        console.log(`Tweeted : ${text}`);
+      }
+    }
+  );
+};
+
+module.exports = { getTargetTweet, updateTweetWithMock, updateTweet };
