@@ -7,8 +7,10 @@ const {
   updateTweet,
 } = require('./twitterClient');
 const memeGenerator = new Memeify();
+const emojiRegex = require('emoji-regex');
+const { sleep } = require('./helper');
 
-async function generateMock(type, mention) {
+async function tweetGeneratedMock(type, mention) {
   let targetTweetId = mention.in_reply_to_status_id_str;
   const targetTweet = await getTargetTweet(targetTweetId);
 
@@ -25,9 +27,10 @@ async function generateMock(type, mention) {
   }
 
   updateTweetWithMock(mention.id_str, mockTextResult, imagePath);
+  await sleep(30000);
 }
 
-async function generateMockEmoji(mention, emoji) {
+async function tweetMockEmoji(mention, emoji) {
   let targetTweetId = mention.in_reply_to_status_id_str;
   const targetTweet = await getTargetTweet(targetTweetId);
 
@@ -35,6 +38,7 @@ async function generateMockEmoji(mention, emoji) {
   const textTransformoji = textFormatter.transformoji(emoji);
 
   updateTweet(mention.id_str, textTransformoji);
+  await sleep(30000);
 }
 
 async function replyWithMock(event) {
@@ -62,12 +66,20 @@ async function replyWithMock(event) {
     texts.map(text => {
       if (text.match(/\bplease/g)) {
         if (text.length > 6) {
-          generateMockEmoji(mention, text.substr(-2));
-        } else {
-          generateMock('spongebob', mention);
+          // @ts-ignore
+          const regex = emojiRegex();
+          let match = regex.exec(text);
+          if (match) {
+            let emoji = match[0];
+            tweetMockEmoji(mention, emoji);
+          } else {
+            return;
+          }
+        } else if (text.length == 6) {
+          tweetGeneratedMock('spongebob', mention);
         }
       } else if (text.match(/\bpliis/g)) {
-        generateMock('khaleesi', mention);
+        tweetGeneratedMock('khaleesi', mention);
       }
     });
   }

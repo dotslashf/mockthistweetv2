@@ -1,10 +1,5 @@
 const Jimp = require('jimp');
-
-const sleep = ms => {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-};
+const { sleep } = require('./helper');
 
 class Memeify {
   async generateMeme(type, imageCaption) {

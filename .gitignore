@@ -118,3 +118,4 @@ dist
 img/*
 !img/mock_khaleesi.png
 !img/mock_spongebob.png
+playground.js
