@@ -57,7 +57,6 @@ async function replyWithMock(event) {
   targetUser = Number(targetUser);
 
   if (config.exclusiveIds.includes(targetUser)) {
-    console.log('Cant mock exclusive ids');
     return;
   } else {
     texts.map(text => {
