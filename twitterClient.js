@@ -1,6 +1,7 @@
 const Twit = require('twit');
 const fs = require('fs');
 const { sleep } = require('./helper');
+const config = require('./configuration');
 require('dotenv/config');
 
 const twitterClient = new Twit({
@@ -75,4 +76,27 @@ const updateTweet = async (replyTargetId, text) => {
   );
 };
 
-module.exports = { getTargetTweet, updateTweetWithMock, updateTweet };
+const isFollower = async targetId => {
+  return twitterClient.get(
+    'friendships/show',
+    {
+      source_screen_name: config.exclusiveScreenName[0],
+      target_id: targetId,
+    },
+    (err, res) => {
+      if (err) {
+        console.log('Error isFollower:', err);
+      } else {
+        // @ts-ignore
+        return res.relationship.source.followed_by;
+      }
+    }
+  );
+};
+
+module.exports = {
+  getTargetTweet,
+  updateTweetWithMock,
+  updateTweet,
+  isFollower,
+};

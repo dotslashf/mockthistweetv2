@@ -5,6 +5,7 @@ const {
   getTargetTweet,
   updateTweetWithMock,
   updateTweet,
+  isFollower,
 } = require('./twitterClient');
 const memeGenerator = new Memeify();
 const emojiRegex = require('emoji-regex');
@@ -55,7 +56,15 @@ async function replyWithMock(event) {
   }
 
   let targetUser = mention.in_reply_to_user_id_str;
+  let requesterUser = mention.user.id_str;
   targetUser = Number(targetUser);
+
+  let isFollowerReturn = await isFollower(requesterUser);
+
+  // @ts-ignore
+  if (!isFollowerReturn) {
+    return;
+  }
 
   if (config.exclusiveIds.includes(targetUser)) {
     return;
