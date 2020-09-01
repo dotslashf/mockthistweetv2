@@ -8,7 +8,6 @@ const {
 } = require('./twitterClient');
 const memeGenerator = new Memeify();
 const emojiRegex = require('emoji-regex');
-const { sleep } = require('./helper');
 
 async function tweetGeneratedMock(type, mention) {
   let targetTweetId = mention.in_reply_to_status_id_str;
@@ -27,7 +26,6 @@ async function tweetGeneratedMock(type, mention) {
   }
 
   updateTweetWithMock(mention.id_str, mockTextResult, imagePath);
-  await sleep(30000);
 }
 
 async function tweetMockEmoji(mention, emoji) {
@@ -38,7 +36,6 @@ async function tweetMockEmoji(mention, emoji) {
   const textTransformoji = textFormatter.transformoji(emoji);
 
   updateTweet(mention.id_str, textTransformoji);
-  await sleep(30000);
 }
 
 async function replyWithMock(event) {

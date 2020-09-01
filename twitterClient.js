@@ -1,5 +1,6 @@
 const Twit = require('twit');
 const fs = require('fs');
+const { sleep } = require('./helper');
 require('dotenv/config');
 
 const twitterClient = new Twit({
@@ -25,6 +26,7 @@ const updateTweetWithMock = async (replyTargetId, text, img) => {
   let imgPath = fs.readFileSync(img, {
     encoding: 'base64',
   });
+  await sleep(30000);
   return twitterClient.post(
     'media/upload',
     { media_data: imgPath },
@@ -43,7 +45,7 @@ const updateTweetWithMock = async (replyTargetId, text, img) => {
           },
           (err, tweet, res) => {
             if (err) {
-              console.log('Error tweeting: ', err);
+              console.log('Error update tweet with image: ', err);
             } else {
               console.log(`Tweeted: ${text}`);
             }
@@ -55,6 +57,7 @@ const updateTweetWithMock = async (replyTargetId, text, img) => {
 };
 
 const updateTweet = async (replyTargetId, text) => {
+  await sleep(30000);
   return twitterClient.post(
     'statuses/update',
     {
@@ -66,7 +69,7 @@ const updateTweet = async (replyTargetId, text) => {
       if (err) {
         console.log('Error update tweet: ', err);
       } else {
-        console.log(`Tweeted : ${text}`);
+        console.log(`Tweeted: ${text}`);
       }
     }
   );
