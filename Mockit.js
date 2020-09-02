@@ -9,8 +9,9 @@ const {
 } = require('./twitterClient');
 const memeGenerator = new Memeify();
 const emojiRegex = require('emoji-regex');
+const upsidedown = require('upsidedown');
 
-async function tweetGeneratedMock(type, mention) {
+async function tweetGeneratedMock(mention, type) {
   let targetTweetId = mention.in_reply_to_status_id_str;
   const targetTweet = await getTargetTweet(targetTweetId);
 
@@ -39,6 +40,46 @@ async function tweetMockEmoji(mention, emoji) {
   updateTweet(mention.id_str, textTransformoji);
 }
 
+async function tweetMockUpsidedown(mention) {
+  let targetTweetId = mention.in_reply_to_status_id_str;
+  const targetTweet = await getTargetTweet(targetTweetId);
+
+  const textUpsidedown = upsidedown(targetTweet);
+
+  updateTweet(mention.id_str, textUpsidedown);
+}
+
+async function checkMention(mention) {
+  let targetUser = mention.in_reply_to_user_id_str;
+  let requesterUser = mention.user.id_str;
+  targetUser = Number(targetUser);
+
+  let isFollowerRes = await isFollower(requesterUser);
+
+  // @ts-ignore
+  if (!isFollowerRes) {
+    return {
+      isFollower: false,
+      targetUser: targetUser,
+    };
+  } else {
+    return {
+      isFollower: true,
+      targetUser: targetUser,
+    };
+  }
+}
+
+async function pleaseMethod(mention, method, emoji = null) {
+  if (method == 'please') {
+    tweetGeneratedMock(mention, 'spongebob');
+  } else if (method == 'emoji') {
+    tweetMockEmoji(mention, emoji);
+  } else if (method == 'upsidedown') {
+    tweetMockUpsidedown(mention);
+  }
+}
+
 async function replyWithMock(event) {
   if (!event.tweet_create_events) {
     return;
@@ -55,38 +96,37 @@ async function replyWithMock(event) {
     return;
   }
 
-  let targetUser = mention.in_reply_to_user_id_str;
-  let requesterUser = mention.user.id_str;
-  targetUser = Number(targetUser);
+  let { isFollower, targetUser } = await checkMention(mention);
 
-  let isFollowerRes = await isFollower(requesterUser);
-
-  // @ts-ignore
-  if (!isFollowerRes) {
-    return;
-  }
-
-  if (config.exclusiveIds.includes(targetUser)) {
+  if (!isFollower) {
+    console.log('Skipped not follower');
     return;
   } else {
-    texts.map(text => {
+    texts.map(async text => {
       if (text.match(/\bplease/g)) {
-        if (text.length > 6) {
-          // @ts-ignore
-          const regex = emojiRegex();
-          let match = regex.exec(text);
-          if (match) {
-            let emoji = match[0];
-            tweetMockEmoji(mention, emoji);
-          } else if (text.match(/\bpleaseud/g)) {
-            tweetMock
-            return;
+        if (config.exclusiveIds.includes(targetUser)) {
+          return;
+        } else {
+          if (text.length == 6) {
+            await pleaseMethod(mention, 'please');
+          } else if (text.length > 6) {
+            // @ts-ignore
+            const regex = emojiRegex();
+            let match = regex.exec(text);
+            if (match) {
+              let emoji = match[0];
+              await pleaseMethod(mention, 'emoji', emoji);
+            } else if (text.match(/\bpleaseud/g)) {
+              await pleaseMethod(mention, 'upsidedown');
+            }
           }
-        } else if (text.length == 6) {
-          tweetGeneratedMock('spongebob', mention);
         }
-      } else if (text.match(/\bpliis/g)) {
-        tweetGeneratedMock('khaleesi', mention);
+      } else if (text.match(/\bpliisi/g)) {
+        if (config.exclusiveIds.includes(targetUser)) {
+          return;
+        } else {
+          tweetGeneratedMock('khaleesi', mention);
+        }
       }
     });
   }

@@ -8,7 +8,8 @@
     "emoji-regex": "^9.0.0",
     "jimp": "^0.16.1",
     "twit": "^2.2.11",
-    "twitter-autohook": "^1.7.2"
+    "twitter-autohook": "^1.7.2",
+    "upsidedown": "^0.0.5"
   },
   "scripts": {
     "start": "node app.js ",

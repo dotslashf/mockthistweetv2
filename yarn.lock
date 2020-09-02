@@ -1070,6 +1070,11 @@ twitter-autohook@^1.7.2:
     ngrok "^3.2.1"
     nock "^12.0.2"
 
+upsidedown@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/upsidedown/-/upsidedown-0.0.5.tgz#0fdaf3c6d96a717499a12146ec44fb82dd52ab7e"
+  integrity sha1-D9rzxtlqcXSZoSFG7ET7gt1Sq34=
+
 uri-js@^4.2.2:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.0.tgz#aa714261de793e8a82347a7bcc9ce74e86f28602"
