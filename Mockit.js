@@ -59,10 +59,10 @@ async function replyWithMock(event) {
   let requesterUser = mention.user.id_str;
   targetUser = Number(targetUser);
 
-  let isFollowerReturn = await isFollower(requesterUser);
+  let isFollowerRes = await isFollower(requesterUser);
 
   // @ts-ignore
-  if (!isFollowerReturn) {
+  if (!isFollowerRes) {
     return;
   }
 
@@ -78,7 +78,8 @@ async function replyWithMock(event) {
           if (match) {
             let emoji = match[0];
             tweetMockEmoji(mention, emoji);
-          } else {
+          } else if (text.match(/\bpleaseud/g)) {
+            tweetMock
             return;
           }
         } else if (text.length == 6) {

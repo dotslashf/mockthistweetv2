@@ -77,21 +77,11 @@ const updateTweet = async (replyTargetId, text) => {
 };
 
 const isFollower = async targetId => {
-  return twitterClient.get(
-    'friendships/show',
-    {
-      source_screen_name: config.exclusiveScreenName[0],
-      target_id: targetId,
-    },
-    (err, res) => {
-      if (err) {
-        console.log('Error isFollower:', err);
-      } else {
-        // @ts-ignore
-        return res.relationship.source.followed_by;
-      }
-    }
-  );
+  let res = await twitterClient.get('friendships/show', {
+    source_screen_name: config.exclusiveScreenName[0],
+    target_id: targetId,
+  });
+  return res.data.relationship.source.followed_by;
 };
 
 module.exports = {
