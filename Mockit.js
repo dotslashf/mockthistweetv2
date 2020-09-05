@@ -125,7 +125,7 @@ async function replyWithMock(event) {
         if (config.exclusiveIds.includes(targetUser)) {
           return;
         } else {
-          tweetGeneratedMock('khaleesi', mention);
+          tweetGeneratedMock(mention, 'khaleesi');
         }
       }
     });
